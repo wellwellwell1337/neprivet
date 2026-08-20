@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>НеПривет — напиши сразу</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="./assets/index-DzJ5L80p.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-YUckA_3y.css">
+</head>
+<body>
+  <!-- Subtle noise overlay -->
+  <div class="noise" aria-hidden="true"></div>
+
+  <!-- ─── HEADER ─── -->
+  <header class="site-header" id="site-header">
+    <span class="site-logo">НеПривет</span>
+    <a href="#share" class="btn-share">Поделиться</a>
+  </header>
+
+  <main>
+
+    <!-- ─── HERO ─── -->
+    <section class="hero">
+      <div class="hero-inner">
+        <p class="hero-eyebrow js-fade" data-delay="0">Руководство по общению</p>
+        <h1 class="hero-title js-fade" data-delay="0.1">
+          Не пишите<br/>просто «Привет»
+        </h1>
+        <p class="hero-desc js-fade" data-delay="0.2">
+          Пожалуйста, не начинайте сообщение просто с приветствия<br/>
+          — сразу формулируйте суть.
+        </p>
+        <a href="#why" class="hero-scroll js-fade" data-delay="0.35" aria-label="Прокрутить вниз">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <path d="M9 3v12M3 9l6 6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Почему это важно
+        </a>
+      </div>
+    </section>
+
+    <!-- ─── DIVIDER LINE ─── -->
+    <div class="timeline-line" aria-hidden="true"></div>
+
+    <!-- ─── WHY SECTION ─── -->
+    <section id="why" class="section why-section">
+      <div class="container">
+        <span class="section-tag js-reveal">Проблема</span>
+        <h2 class="section-title js-reveal">Как <em>не надо</em></h2>
+        <p class="section-sub js-reveal">Вы пишете «Привет» и ждёте ответа, прежде чем задать вопрос.</p>
+
+        <div class="split js-reveal">
+          <div class="chat-wrap">
+            <div class="chat-window bad">
+              <div class="chat-bar">
+                <div class="chat-avatar bad-avatar"></div>
+                <span>Чат с коллегой</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg msg-in">Привет<span class="msg-time">08:03</span></div>
+                <div class="msg msg-out typing-delay">Привет.<span class="msg-time">08:42</span></div>
+                <div class="msg msg-in">
+                  <em>Собеседник набирает сообщение…</em>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="explanation bad-exp">
+            <div class="icon-badge bad-badge">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M7 7l8 8M15 7l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p>Вместо того чтобы сразу перейти к делу, вы ждёте пока собеседник ответит на ваше приветствие — и заставляете его ждать, пока сформулируете вопрос.</p>
+            <p>Оба теряют время зря.</p>
+          </div>
+        </div>
+
+        <div class="split split-reverse js-reveal">
+          <div class="explanation bad-exp">
+            <div class="icon-badge bad-badge">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M7 7l8 8M15 7l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <p>А затем вы вынуждены ждать ответа на важный вопрос, чтобы продолжить работу над своим проектом.</p>
+            <p>Сэкономьте своё время и время собеседника — <strong>напишите вопрос сразу.</strong></p>
+          </div>
+          <div class="chat-wrap">
+            <div class="chat-window bad">
+              <div class="chat-bar">
+                <div class="chat-avatar bad-avatar"></div>
+                <span>Чат с коллегой</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg msg-in">Я работаю над проектом,<br/>у меня есть вопрос <span class="placeholder">[текст вопроса]</span><span class="msg-time">08:03</span></div>
+                <div class="msg msg-out">Да, это можно решить вот таким способом <span class="placeholder">[текст ответа]</span><span class="msg-time">08:32</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── HOW SECTION ─── -->
+    <section id="how" class="section how-section">
+      <div class="container">
+        <span class="section-tag js-reveal">Решение</span>
+        <h2 class="section-title js-reveal">Как <em>надо</em></h2>
+        <p class="section-sub js-reveal">Приветствие и вопрос — в одном сообщении.</p>
+
+        <div class="split js-reveal">
+          <div class="chat-wrap">
+            <div class="chat-window good">
+              <div class="chat-bar">
+                <div class="chat-avatar good-avatar"></div>
+                <span>Чат с коллегой</span>
+              </div>
+              <div class="chat-body">
+                <div class="msg msg-in">
+                  Привет! Я работаю над проектом,<br/>у меня есть вопрос <span class="placeholder">[текст вопроса]</span>
+                  <span class="msg-time">08:00</span>
+                </div>
+                <div class="msg msg-out">
+                  Привет, это можно решить<br/>таким способом <span class="placeholder">[текст ответа]</span>
+                  <span class="msg-time">08:25</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="explanation good-exp">
+            <div class="icon-badge good-badge">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+                <circle cx="11" cy="11" r="10" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M6 11l3.5 3.5L16 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <p>Обратите внимание: вы получаете помощь раньше и не заставляете никого ждать.</p>
+            <p>Вместо этого коллега может сразу же начать думать над вашим вопросом.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── ASYNC NOTE ─── -->
+    <section class="async-section section">
+      <div class="container">
+        <p class="async-note js-reveal">
+          Но чат — это ни то и ни другое
+        </p>
+        <p class="async-desc js-reveal">
+          Набирать текст гораздо медленнее, чем говорить. Вместо того чтобы быть вежливым,
+          вы просто заставляете собеседника ждать, пока сформулируете запрос —
+          а это потеря производительности.
+        </p>
+        <p class="async-desc js-reveal">
+          Кроме того, задавая вопрос до получения ответа, вы можете общаться
+          <strong>асинхронно</strong> — если собеседник занят, он всё равно ответит
+          и вы получите ответ раньше.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─── SHARE ─── -->
+    <section id="share" class="share-section section">
+      <div class="container">
+        <h2 class="share-title js-reveal">Поделитесь ссылкой</h2>
+        <p class="share-sub js-reveal">Если увидите эту ссылку у кого-то в статусе — вспомните эту страницу, и не пишите только «Привет» :)</p>
+        <div class="copy-wrap js-reveal">
+          <span class="copy-url" id="copy-url">krlx.ru</span>
+          <button class="copy-btn" id="copy-btn" aria-label="Скопировать ссылку">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="5" y="5" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M4 11H3a2 2 0 01-2-2V3a2 2 0 012-2h6a2 2 0 012 2v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span id="copy-label">Скопировать</span>
+          </button>
+        </div>
+        <p class="share-author js-reveal">Страница создана <a href="https://t.me/swiftzip" target="_blank" rel="noopener" class="author-link">@swiftzip</a></p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span>НеПривет — 2026</span>
+      <span>Сделано с заботой о времени других</span>
+    </div>
+  </footer>
+
+</body>
+</html>
