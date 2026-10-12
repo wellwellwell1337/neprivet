@@ -8,23 +8,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <script>
-    const theme = localStorage.getItem('np_theme');
-    const bg = theme === 'cyberpunk' ? '#120424' : theme === 'matrix' ? '#000800' : '#0d0d12';
-    document.documentElement.style.background = bg;
-    document.documentElement.style.setProperty('--bg', bg);
-    if (theme === 'cyberpunk') {
-      document.documentElement.style.setProperty('--surface', '#1f093d');
-      document.documentElement.style.setProperty('--card', '#2b0f4c');
-      document.documentElement.style.setProperty('--accent', '#ff0055');
-    } else if (theme === 'matrix') {
-      document.documentElement.style.setProperty('--surface', '#001a00');
-      document.documentElement.style.setProperty('--card', '#002600');
-      document.documentElement.style.setProperty('--accent', '#00ff41');
-      document.documentElement.style.setProperty('--good', '#00ff41');
-    }
-    if (localStorage.getItem('np_transitions') === 'false') {
-      document.documentElement.classList.add('no-view-transitions');
-    }
+    try {
+      const theme = localStorage.getItem('np_theme');
+      const bg = theme === 'cyberpunk' ? '#120424' : theme === 'matrix' ? '#000800' : '#0d0d12';
+      document.documentElement.style.background = bg;
+      document.documentElement.style.setProperty('--bg', bg);
+      if (theme === 'cyberpunk') {
+        document.documentElement.style.setProperty('--surface', '#1f093d');
+        document.documentElement.style.setProperty('--card', '#2b0f4c');
+        document.documentElement.style.setProperty('--accent', '#ff0055');
+        document.documentElement.style.setProperty('--accent-glow', 'rgba(255,0,85,0.08)');
+      } else if (theme === 'matrix') {
+        document.documentElement.style.setProperty('--surface', '#001a00');
+        document.documentElement.style.setProperty('--card', '#002600');
+        document.documentElement.style.setProperty('--accent', '#00ff41');
+        document.documentElement.style.setProperty('--good', '#00ff41');
+        document.documentElement.style.setProperty('--accent-glow', 'rgba(0,255,65,0.08)');
+      } else {
+        document.documentElement.style.setProperty('--accent-glow', 'rgba(123,97,255,0.08)');
+      }
+      if (localStorage.getItem('np_transitions') === 'false') {
+        document.documentElement.classList.add('no-view-transitions');
+      }
+    } catch (e) {}
   </script>
   <style>
     /* Critical CSS — applied before any JS module loads.
@@ -33,7 +39,503 @@
     html { background: var(--bg, #0d0d12); }
     body { background: var(--bg, #0d0d12); font-family: 'Inter', sans-serif; color: #e8e8f0; opacity: 0; transition: opacity 0.15s ease; }
     body.ready { opacity: 1; }
-  </style>
+
+    /* ── PARTICLES CANVAS ── */
+    #particles-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+    }
+
+    /* \u2500\u2500 PARALLAX HERO \u2500\u2500 */
+    .hero { overflow: hidden; }
+    .hero-inner { will-change: transform; }
+
+    /* \u2500\u2500 DESIGN POLISH \u2500\u2500 */
+
+    /* Mesh gradient backdrop behind hero */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 20% 40%, rgba(123,97,255,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 80% 60%, rgba(52,211,153,0.04) 0%, transparent 60%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* Ambient glow under how-section */
+    .how-section { background: linear-gradient(to bottom, rgba(52,211,153,.03) 0%, transparent 50%) !important; }
+    .how-section::before {
+      content: ''; position: absolute;
+      top: -1px; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(to right, transparent, rgba(52,211,153,.2), transparent);
+    }
+
+    /* Section top lines — thin gradient */
+    .why-section::before, .async-section::before, .share-section::before, .demo-section::before {
+      content: ''; position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(to right, transparent, var(--border, rgba(255,255,255,.08)), transparent);
+    }
+    .why-section, .async-section, .share-section, .demo-section {
+      border-top: none !important; position: relative;
+    }
+
+    /* Chat windows — rounder, softer borders, elegant ambient glow */
+    .chat-window {
+      border-radius: 18px !important;
+      overflow: hidden;
+      background: var(--card, #18181f);
+      border: 1px solid var(--border, rgba(255,255,255,0.08));
+      box-shadow: 0 6px 24px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+    }
+    .chat-window.bad  {
+      border-color: rgba(255,68,68,0.14) !important;
+    }
+    .chat-window.good {
+      border-color: rgba(52,211,153,0.14) !important;
+    }
+    .chat-window.bad:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255,68,68,0.3) !important;
+      box-shadow: 0 16px 40px -6px rgba(0,0,0,0.5), 0 0 36px rgba(255,68,68,0.08), inset 0 1px 0 rgba(255,68,68,0.12) !important;
+    }
+    .chat-window.good:hover {
+      transform: translateY(-2px);
+      border-color: rgba(52,211,153,0.3) !important;
+      box-shadow: 0 16px 40px -6px rgba(0,0,0,0.5), 0 0 36px rgba(52,211,153,0.08), inset 0 1px 0 rgba(52,211,153,0.12) !important;
+    }
+
+    /* Avatar ring */
+    .chat-avatar { box-shadow: 0 0 0 2px var(--surface,#13131a), 0 0 0 3px rgba(255,255,255,.05); }
+
+    /* Share section ambient */
+    .share-section { background: linear-gradient(to bottom, transparent, rgba(123,97,255,.03) 50%, transparent) !important; }
+
+    /* Copy-url pill & container */
+    .copy-wrap {
+      border-radius: 14px !important;
+      border: 1px solid var(--border, rgba(255,255,255,0.08));
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.3);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .copy-wrap:hover {
+      border-color: rgba(123,97,255,0.3);
+      box-shadow: 0 10px 32px -4px rgba(0,0,0,0.45), 0 0 28px rgba(123,97,255,0.09);
+    }
+    .copy-url { background: linear-gradient(135deg, var(--surface), rgba(123,97,255,.08)) !important; }
+
+    /* Rule cards softer */
+    .rule-card {
+      border-radius: 18px !important;
+      border: 1px solid var(--border, rgba(255,255,255,0.07)) !important;
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.3);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+    }
+    .rule-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(123,97,255,0.25) !important;
+      box-shadow: 0 16px 40px -6px rgba(0,0,0,0.5), 0 0 32px rgba(123,97,255,0.08), inset 0 1px 0 rgba(123,97,255,0.1) !important;
+    }
+
+    /* Messages styling — softer rounded bubbles */
+    .msg {
+      border-radius: 14px !important;
+      line-height: 1.55;
+    }
+    .msg-in { border-bottom-left-radius: 4px !important; }
+    .msg-out { border-bottom-right-radius: 4px !important; }
+
+    /* Icon badge glow — soft ambient drop */
+    .good-badge { box-shadow: 0 4px 20px rgba(52,211,153,.15), inset 0 1px 0 rgba(255,255,255,.15); }
+    .bad-badge  { box-shadow: 0 4px 20px rgba(255,68,68,.12), inset 0 1px 0 rgba(255,255,255,.15); }
+
+    /* Async note gradient text */
+    .async-note {
+      background: linear-gradient(135deg, var(--text,#e8e8ed) 40%, var(--accent,#7B61FF) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    /* Footer gradient top line */
+    .site-footer { border-top: none !important; position: relative; }
+    .site-footer::before {
+      content: ''; position: absolute;
+      top: 0; left: 10%; right: 10%; height: 1px;
+      background: linear-gradient(to right, transparent, var(--border,rgba(255,255,255,.08)), transparent);
+    }
+
+    /* ── GLOW & BUTTON EFFECTS ── */
+    .btn-share {
+      position: relative;
+      border-radius: 99px;
+      transition: background 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.3s ease, transform 0.25s ease;
+    }
+    .btn-share:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(123,97,255,0.22), 0 0 16px rgba(123,97,255,0.1);
+    }
+
+    .copy-btn {
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 12px 12px 0;
+    }
+    .copy-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(123,97,255,0.15), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.4s ease;
+    }
+    .copy-btn:hover::before { transform: translateX(100%); }
+
+    /* ── TYPING CURSOR ── */
+    .typing-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 1em;
+      background: var(--accent, #7B61FF);
+      margin-left: 4px;
+      vertical-align: middle;
+      border-radius: 2px;
+      animation: blink 0.9s ease-in-out infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── TYPING DOTS (chat) ── */
+    .typing-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 12px;
+    }
+    .typing-dots span {
+      display: block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--text-3, #55556a);
+      animation: dotBounce 1.3s ease-in-out infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: 0.18s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.36s; }
+    @keyframes dotBounce {
+      0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+      40% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── STATS SECTION ── */
+    .stats-section {
+      padding: 5rem 0;
+      border-top: 1px solid var(--border, rgba(255,255,255,0.08));
+      position: relative;
+      z-index: 1;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 2.5rem;
+    }
+    .stat-card {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--card, #18181f);
+      border: 1px solid var(--border, rgba(255,255,255,0.08));
+      border-radius: 18px;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease;
+      cursor: default;
+      box-shadow: 0 4px 20px -2px rgba(0,0,0,0.3);
+    }
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 36px -6px rgba(0,0,0,0.45), 0 0 32px rgba(123,97,255,0.08);
+      border-color: rgba(123,97,255,0.25);
+    }
+    .stat-number {
+      font-family: var(--font, 'Minecraft', sans-serif);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 400;
+      color: var(--accent, #7B61FF);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-2, #888898);
+      letter-spacing: 0.04em;
+    }
+
+    /* ── MOUSE GLOW CURSOR ── */
+    .mouse-glow {
+      position: fixed;
+      width: 480px;
+      height: 480px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle, var(--accent-glow, rgba(123,97,255,0.06)) 0%, transparent 68%);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      opacity: 0;
+      filter: blur(20px);
+    }
+
+    /* ── NAV ACTIVE GLOW ── */
+    .nav-item.active {
+      box-shadow: 0 2px 14px rgba(123,97,255,0.18), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .nav-item {
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+    .nav-item:hover:not(.active) {
+      box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+    }
+
+    /* ── SECTION HIGHLIGHT LINE ── */
+    .section-tag {
+      position: relative;
+    }
+    .section-tag::before {
+      content: '';
+      display: inline-block;
+      width: 18px;
+      height: 2px;
+      background: var(--accent, #7B61FF);
+      vertical-align: middle;
+      margin-right: 8px;
+      border-radius: 2px;
+    }
+
+    /* ── HERO GRADIENT ORBS ── */
+    .hero-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+    .hero-orb-1 {
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(123,97,255,0.12) 0%, transparent 70%);
+      top: 10%;
+      left: -10%;
+    }
+    .hero-orb-2 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(52,211,153,0.07) 0%, transparent 70%);
+      bottom: 15%;
+      right: -5%;
+      animation-delay: -4s;
+    }
+    @keyframes orbFloat {
+      from { transform: translate(0, var(--scroll-y, 0px)) scale(1); }
+      to { transform: translate(30px, calc(var(--scroll-y, 0px) - 20px)) scale(1.05); }
+    }
+    .hero { position: relative; z-index: 1; }
+    .hero-inner { position: relative; z-index: 2; }
+
+    /* Ensure all content above canvas/glow */
+    main, header, nav, footer { position: relative; z-index: 1; }
+
+    /* \u2500\u2500 DEMO SECTION \u2500\u2500 */
+    .demo-section { border-top: 1px solid var(--border, rgba(255,255,255,.08)); }
+
+    .demo-tabs {
+      display: flex; gap: .75rem;
+      margin-bottom: 2rem;
+    }
+    .demo-tab-btn {
+      display: flex; align-items: center; gap: .5rem;
+      padding: .6rem 1.4rem; border-radius: 99px;
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      background: var(--surface, #13131a);
+      color: var(--text-2, #888898);
+      font-family: var(--font); font-size: .82rem;
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s, box-shadow .25s ease, transform .2s ease;
+    }
+    .demo-tab-btn:hover { color: var(--text); background: var(--card); }
+    .demo-tab-btn.active {
+      background: var(--accent-dim, rgba(123,97,255,.15));
+      border-color: var(--accent, #7B61FF);
+      color: var(--text);
+      box-shadow: 0 4px 18px rgba(123,97,255,0.16), inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+    .demo-tab-icon { font-size: 1rem; }
+
+    .demo-arena {
+      display: flex; align-items: flex-start; gap: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    /* phone mockup — rounded, soft lighting */
+    .demo-phone {
+      flex: 0 0 320px; max-width: 100%;
+      background: var(--card, #18181f);
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 8px 32px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: border-color .4s, box-shadow .4s, transform .4s;
+    }
+    .demo-phone.scene-bad  {
+      border-color: rgba(255,68,68,.18);
+      box-shadow: 0 14px 40px -4px rgba(0,0,0,0.45), 0 0 36px rgba(255,68,68,.07), inset 0 1px 0 rgba(255,68,68,0.1);
+    }
+    .demo-phone.scene-good {
+      border-color: rgba(52,211,153,.18);
+      box-shadow: 0 14px 40px -4px rgba(0,0,0,0.45), 0 0 36px rgba(52,211,153,.07), inset 0 1px 0 rgba(52,211,153,0.1);
+    }
+
+    .demo-phone-bar {
+      display: flex; align-items: center; gap: .75rem;
+      padding: .75rem 1rem;
+      border-bottom: 1px solid var(--border, rgba(255,255,255,.08));
+    }
+    .demo-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #7B61FF, #34d399);
+      transition: background .4s;
+      flex-shrink: 0;
+    }
+    .demo-avatar.bad-av  { background: linear-gradient(135deg,#f44,#f88); }
+    .demo-avatar.good-av { background: linear-gradient(135deg,#34d399,#6ee7b7); }
+    .demo-contact-name { display: block; font-size: .82rem; color: var(--text); }
+    .demo-contact-status {
+      display: block; font-size: .68rem;
+      color: var(--text-3, #55556a); letter-spacing: .03em;
+    }
+    .demo-contact-status.online { color: #34d399; }
+
+    .demo-chat-body {
+      min-height: 200px; padding: 1rem;
+      display: flex; flex-direction: column; gap: .55rem;
+      overflow: hidden;
+    }
+
+    /* demo messages — rounded message bubbles */
+    .demo-msg {
+      max-width: 82%;
+      padding: .65rem .9rem;
+      border-radius: 14px;
+      font-size: .8rem; line-height: 1.55;
+      color: var(--text);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity .3s ease, transform .3s ease;
+    }
+    .demo-msg.visible { opacity: 1; transform: translateY(0); }
+    .demo-msg.in  {
+      align-self: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+    .demo-msg.out {
+      align-self: flex-end;
+      background: var(--accent-dim);
+      border: 1px solid rgba(123,97,255,.2);
+      border-bottom-right-radius: 4px;
+    }
+    .demo-msg.out.good-out {
+      background: var(--good-dim, rgba(52,211,153,.12));
+      border-color: rgba(52,211,153,.25);
+      border-bottom-right-radius: 4px;
+    }
+    .demo-msg-time { display: block; font-size: .65rem; color: var(--text-3); margin-top: .2rem; text-align: right; }
+
+    /* typing dots inside demo */
+    .demo-dots {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 0;
+    }
+    .demo-dots span {
+      display: block; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--text-3, #55556a);
+      animation: dotBounce 1.3s ease-in-out infinite;
+    }
+    .demo-dots span:nth-child(2) { animation-delay: .18s; }
+    .demo-dots span:nth-child(3) { animation-delay: .36s; }
+
+    /* time bar */
+    .demo-time-bar {
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
+      padding: .65rem 1rem;
+      border-top: 1px solid var(--border, rgba(255,255,255,.08));
+      font-size: .75rem; color: var(--text-2);
+    }
+    .demo-time-value { font-family: var(--font); font-size: .9rem; color: var(--accent); }
+    .demo-time-value.good-time { color: var(--good, #34d399); }
+
+    /* verdict — rounded, soft lighting */
+    .demo-verdict {
+      flex: 1; min-width: 200px;
+      display: flex; flex-direction: column; gap: 1rem;
+      padding: 1.6rem;
+      background: var(--card, #18181f);
+      border: 1px solid var(--border, rgba(255,255,255,.08));
+      border-radius: 20px;
+      box-shadow: 0 8px 32px -4px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+      opacity: 0; transition: opacity .5s ease, transform .5s ease;
+      min-height: 200px; justify-content: center;
+    }
+    .demo-verdict.visible { opacity: 1; }
+    .demo-verdict-icon {
+      font-size: 2rem;
+      display: block; margin-bottom: .25rem;
+    }
+    .demo-verdict-title {
+      font-family: var(--font); font-size: 1.1rem;
+      color: var(--text); margin-bottom: .35rem;
+    }
+    .demo-verdict-text { font-size: .85rem; color: var(--text-2); line-height: 1.7; }
+    .demo-verdict-tag {
+      display: inline-flex; align-items: center; gap: .4rem;
+      font-size: .72rem; padding: .3rem .75rem;
+      border-radius: 99px;
+      margin-top: .25rem; width: fit-content;
+    }
+    .demo-verdict-tag.bad-tag  { background: var(--bad-dim, rgba(255,68,68,.12)); color: var(--bad, #ff4444); }
+    .demo-verdict-tag.good-tag { background: var(--good-dim, rgba(52,211,153,.12)); color: var(--good, #34d399); }
+
+    /* replay button */
+    .demo-controls { margin-top: 1.5rem; display: flex; justify-content: center; }
+    .demo-replay-btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      padding: .6rem 1.4rem; border-radius: 99px;
+      border: 1px solid var(--border); background: var(--surface);
+      color: var(--text-2); font-family: var(--font); font-size: .8rem;
+      cursor: pointer;
+      transition: background .2s, color .2s, transform .2s, box-shadow .25s ease, border-color .2s;
+    }
+    .demo-replay-btn:hover {
+      background: var(--accent-dim);
+      color: var(--text);
+      border-color: var(--accent);
+      box-shadow: 0 4px 18px rgba(123,97,255,.18);
+      transform: translateY(-1px);
+    }
+    .demo-replay-btn:active { transform: scale(.96); }
+    .demo-replay-btn svg { transition: transform .4s ease; }
+    .demo-replay-btn:hover svg { transform: rotate(360deg); }
+
+    @media (max-width: 700px) {
+      .demo-arena { flex-direction: column; }
+      .demo-phone { flex: none; width: 100%; }
+      .demo-verdict { min-height: auto; }
+    }
+      .settings-modal { border-radius: 20px !important; box-shadow: 0 20px 50px -10px rgba(0,0,0,0.7), 0 0 32px rgba(123,97,255,0.08) !important; }
+  </style>
   <script type="module" crossorigin src="./assets/main-DlyCeHxg.js"></script>
   <link rel="modulepreload" crossorigin href="./assets/settings-BnMSwlz1.js">
   <link rel="stylesheet" crossorigin href="./assets/settings-6SeNRSCi.css">
@@ -44,7 +546,7 @@
 
   <!-- ─── HEADER ─── -->
   <header class="site-header" id="site-header">
-    <a href="/" class="site-logo">НеПривет</a>
+    <a href="index.html" class="site-logo">НеПривет</a>
     <div class="header-actions">
       <button id="settings-btn" class="btn-icon" aria-label="Настройки">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
@@ -63,11 +565,14 @@
   <main>
 
     <!-- ─── HERO ─── -->
-    <section class="hero">
-      <div class="hero-inner">
+    <section class="hero" id="hero">
+      <!-- gradient orbs -->
+      <div class="hero-orb hero-orb-1" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-2" aria-hidden="true"></div>
+      <div class="hero-inner" id="hero-inner">
         <p class="hero-eyebrow js-fade" data-delay="0">Руководство по общению</p>
-        <h1 class="hero-title js-fade" data-delay="0.1">
-          Не пишите<br/>просто «Привет»
+        <h1 class="hero-title js-fade" data-delay="0.1" id="hero-title-el">
+          <span id="typed-text"></span><span class="typing-cursor" id="typing-cursor"></span>
         </h1>
         <p class="hero-desc js-fade" data-delay="0.2">
           Пожалуйста, не начинайте сообщение просто с приветствия<br/>
@@ -84,6 +589,54 @@
 
     <!-- ─── DIVIDER LINE ─── -->
     <div class="timeline-line" aria-hidden="true"></div>
+
+    <!-- ─── LIVE DEMO SECTION ─── -->
+    <section class="demo-section section" id="demo">
+      <div class="container">
+        <span class="section-tag js-reveal">Живая демонстрация</span>
+        <h2 class="section-title js-reveal">Посмотри как это выглядит</h2>
+        <p class="section-sub js-reveal">Нажми на сценарий — и увидишь разницу в реальном времени.</p>
+
+        <div class="demo-tabs js-reveal">
+          <button class="demo-tab-btn active" data-scene="bad" id="demo-bad-btn">
+            <span class="demo-tab-icon">😬</span>
+            Как не надо
+          </button>
+          <button class="demo-tab-btn" data-scene="good" id="demo-good-btn">
+            <span class="demo-tab-icon">✅</span>
+            Как надо
+          </button>
+        </div>
+
+        <div class="demo-arena js-reveal">
+          <div class="demo-phone">
+            <div class="demo-phone-bar">
+              <div class="demo-avatar" id="demo-avatar"></div>
+              <div class="demo-contact">
+                <span class="demo-contact-name" id="demo-contact-name">Коллега</span>
+                <span class="demo-contact-status" id="demo-contact-status">в сети</span>
+              </div>
+            </div>
+            <div class="demo-chat-body" id="demo-chat-body"></div>
+            <div class="demo-time-bar">
+              <span class="demo-time-label">Время ответа:</span>
+              <span class="demo-time-value" id="demo-time-value">—</span>
+            </div>
+          </div>
+          <div class="demo-verdict" id="demo-verdict"></div>
+        </div>
+
+        <div class="demo-controls js-reveal">
+          <button class="demo-replay-btn" id="demo-replay-btn" aria-label="Воспроизвести снова">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+            </svg>
+            Повторить
+          </button>
+        </div>
+      </div>
+    </section>
 
     <!-- ─── WHY SECTION ─── -->
     <section id="why" class="section why-section">
@@ -103,7 +656,9 @@
                 <div class="msg msg-in">Привет<span class="msg-time">08:03</span></div>
                 <div class="msg msg-out typing-delay">Привет.<span class="msg-time">08:42</span></div>
                 <div class="msg msg-in">
-                  <em>Собеседник набирает сообщение…</em>
+                  <div class="typing-dots" aria-label="Собеседник набирает сообщение">
+                    <span></span><span></span><span></span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -234,6 +789,327 @@
       <span>Сделано с заботой о времени других</span>
     </div>
   </footer>
+
+  <!-- Mouse glow element -->
+  <div class="mouse-glow" id="mouse-glow" aria-hidden="true"></div>
+
+  <!-- Particles canvas -->
+  <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+  <script>
+  /* ── 1. PARTICLES ── */
+  (function() {
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], animId;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+
+    function getAccentRgb() {
+      const v = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      if (v.startsWith('#')) {
+        const hex = v.slice(1);
+        const r = parseInt(hex.slice(0,2),16);
+        const g = parseInt(hex.slice(2,4),16);
+        const b = parseInt(hex.slice(4,6),16);
+        return `${r},${g},${b}`;
+      }
+      return '123,97,255';
+    }
+
+    function createParticle() {
+      return {
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.5 + 0.3,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        alpha: Math.random() * 0.5 + 0.1
+      };
+    }
+
+    function init() {
+      resize();
+      const count = Math.min(80, Math.floor(W * H / 14000));
+      particles = [];
+      for (let i = 0; i < count; i++) particles.push(createParticle());
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      const rgb = getAccentRgb();
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${rgb},${p.alpha})`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -5) p.x = W + 5;
+        if (p.x > W + 5) p.x = -5;
+        if (p.y < -5) p.y = H + 5;
+        if (p.y > H + 5) p.y = -5;
+      });
+      animId = requestAnimationFrame(draw);
+    }
+
+    window.addEventListener('resize', () => { cancelAnimationFrame(animId); init(); draw(); });
+    init();
+    draw();
+  })();
+
+  /* ── 2. MOUSE GLOW ── */
+  (function() {
+    const glow = document.getElementById('mouse-glow');
+    let visible = false;
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top = e.clientY + 'px';
+      if (!visible) { glow.style.opacity = '1'; visible = true; }
+    });
+    document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; visible = false; });
+  })();
+
+  /* ── 3. TYPING ANIMATION ── */
+  (function() {
+    const el = document.getElementById('typed-text');
+    const cursor = document.getElementById('typing-cursor');
+    if (!el) return;
+    const line1 = 'Не пишите';
+    const line2 = 'просто «Привет»';
+    const fullText = line1 + '\n' + line2;
+    let i = 0;
+
+    function type() {
+      if (i <= fullText.length) {
+        const chunk = fullText.slice(0, i);
+        el.innerHTML = chunk.replace('\n', '<br/>');
+        i++;
+        const delay = i <= line1.length ? 70 : i === line1.length + 1 ? 300 : 60;
+        setTimeout(type, delay);
+      } else {
+        setTimeout(() => {
+          if (cursor) { cursor.style.animation = 'none'; cursor.style.opacity = '0'; }
+        }, 1800);
+      }
+    }
+
+    setTimeout(type, 500);
+  })();
+
+  /* ── 4. PARALLAX HERO ── */
+  (function() {
+    const inner = document.getElementById('hero-inner');
+    const orbs = document.querySelectorAll('.hero-orb');
+    if (!inner) return;
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const y = window.scrollY;
+          inner.style.transform = `translateY(${y * 0.22}px)`;
+          orbs.forEach((o, idx) => {
+            o.style.setProperty('--scroll-y', `${y * (idx === 0 ? 0.12 : 0.08)}px`);
+          });
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+  })();
+
+  /* \u2500\u2500 5. LIVE DEMO ENGINE \u2500\u2500 */
+  (function() {
+    const chatBody  = document.getElementById('demo-chat-body');
+    const verdict   = document.getElementById('demo-verdict');
+    const timeVal   = document.getElementById('demo-time-value');
+    const replayBtn = document.getElementById('demo-replay-btn');
+    const avatar    = document.getElementById('demo-avatar');
+    const phone     = document.querySelector('.demo-phone');
+    const tabBtns   = document.querySelectorAll('.demo-tab-btn');
+    if (!chatBody) return;
+
+    let currentScene = 'bad';
+    let running = false;
+    let timeouts = [];
+
+    const scenes = {
+      bad: {
+        avatarClass: 'bad-av',
+        phoneClass: 'scene-bad',
+        steps: [
+          { delay: 300,  dir: 'in',  text: 'Привет', time: '09:01' },
+          { delay: 700,  dir: 'in',  dots: true },
+          { delay: 1600, dir: 'out', text: 'Привет :)', time: '09:38', removeDots: true },
+          { delay: 2200, dir: 'in',  dots: true },
+          { delay: 3000, dir: 'in',  text: 'У тебя есть минутка?', time: '09:39', removeDots: true },
+          { delay: 3600, dir: 'out', dots: true },
+          { delay: 4600, dir: 'out', text: 'Да, что случилось?', time: '10:12', removeDots: true },
+        ],
+        finalTime: '~70 мин',
+        finalTimeClass: '',
+        verdict: {
+          icon: '😮',
+          title: 'Потрачено ~70 минут',
+          text: 'Три пустых обмена сообщениями — и только потом к сути. Собеседник дважды прерывался и потерял контекст.',
+          tag: '❌ Так не надо',
+          tagClass: 'bad-tag',
+        }
+      },
+      good: {
+        avatarClass: 'good-av',
+        phoneClass: 'scene-good',
+        steps: [
+          { delay: 300,  dir: 'in',  text: 'Привет! Есть вопрос по деплою — Railway падает с ошибкой 502 после пуша. Логи прикладываю: [logs]. Что смотреть?', time: '09:01' },
+          { delay: 1000, dir: 'out', dots: true },
+          { delay: 2400, dir: 'out', text: 'Привет! Скорее всего PORT не выставлен. Добавь PORT=3000 в env. Если не поможет — скинь Dockerfile', time: '09:08', removeDots: true },
+          { delay: 3200, dir: 'in',  text: 'Сработало, спасибо! 🎉', time: '09:09' },
+        ],
+        finalTime: '~8 мин',
+        finalTimeClass: 'good-time',
+        verdict: {
+          icon: '🚀',
+          title: 'Вопрос решён за ~8 минут',
+          text: 'Один чёткий вопрос с контекстом — один чёткий ответ. Собеседник сразу понял задачу и смог помочь.',
+          tag: '✅ Вот как надо',
+          tagClass: 'good-tag',
+        }
+      }
+    };
+
+    function stopScene() {
+      timeouts.forEach(clearTimeout);
+      timeouts = [];
+      running = false;
+    }
+
+    function clearAll() {
+      stopScene();
+      chatBody.innerHTML = '';
+      verdict.innerHTML = '';
+      verdict.classList.remove('visible');
+      timeVal.textContent = '—';
+      timeVal.className = 'demo-time-value';
+      if (phone) phone.className = 'demo-phone';
+      if (avatar) avatar.className = 'demo-avatar';
+    }
+
+    function addMsg(dir, text, time, isGood) {
+      const el = document.createElement('div');
+      el.className = `demo-msg ${dir}${dir === 'out' && isGood ? ' good-out' : ''}`;
+      el.innerHTML = text + (time ? `<span class="demo-msg-time">${time}</span>` : '');
+      chatBody.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')));
+      chatBody.scrollTop = chatBody.scrollHeight;
+      return el;
+    }
+
+    function addDots(dir) {
+      const el = document.createElement('div');
+      el.className = `demo-msg ${dir}`;
+      el.id = `dots-${dir}`;
+      el.innerHTML = '<div class="demo-dots"><span></span><span></span><span></span></div>';
+      chatBody.appendChild(el);
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')));
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function removeDots(dir) {
+      const el = document.getElementById(`dots-${dir}`);
+      if (el) el.remove();
+    }
+
+    function showVerdict(v) {
+      verdict.innerHTML = `
+        <span class="demo-verdict-icon">${v.icon}</span>
+        <div>
+          <div class="demo-verdict-title">${v.title}</div>
+          <p class="demo-verdict-text">${v.text}</p>
+          <span class="demo-verdict-tag ${v.tagClass}">${v.tag}</span>
+        </div>`;
+      const t = setTimeout(() => verdict.classList.add('visible'), 80);
+      timeouts.push(t);
+    }
+
+    function playScene(sceneName) {
+      clearAll();
+      running = true;
+
+      const scene = scenes[sceneName];
+      const isGood = sceneName === 'good';
+
+      if (phone) phone.classList.add(scene.phoneClass);
+      if (avatar) avatar.classList.add(scene.avatarClass);
+
+      scene.steps.forEach(step => {
+        const t = setTimeout(() => {
+          if (step.removeDots) removeDots(step.dir);
+          if (step.dots) {
+            addDots(step.dir);
+          } else if (step.text) {
+            addMsg(step.dir, step.text, step.time, isGood);
+          }
+        }, step.delay);
+        timeouts.push(t);
+      });
+
+      const lastDelay = scene.steps[scene.steps.length - 1].delay;
+
+      const t1 = setTimeout(() => {
+        timeVal.textContent = scene.finalTime;
+        if (scene.finalTimeClass) timeVal.classList.add(scene.finalTimeClass);
+      }, lastDelay + 400);
+
+      const t2 = setTimeout(() => {
+        showVerdict(scene.verdict);
+        running = false;
+      }, lastDelay + 700);
+
+      timeouts.push(t1, t2);
+    }
+
+    // tab switching
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentScene = btn.dataset.scene;
+        playScene(currentScene);
+      });
+    });
+
+    // replay
+    replayBtn && replayBtn.addEventListener('click', () => {
+      playScene(currentScene);
+    });
+
+    // auto-start on scroll into view
+    const demoSection = document.getElementById('demo');
+    if (demoSection) {
+      const obs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          playScene(currentScene);
+          obs.disconnect();
+        }
+      }, { threshold: 0.3 });
+      obs.observe(demoSection);
+    }
+  })();
+
+  /* \u2500\u2500 6. THEME ORB SYNC \u2500\u2500 */
+  (function() {
+    function syncOrbs() {
+      const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+      const orb1 = document.querySelector('.hero-orb-1');
+      if (orb1) orb1.style.background = `radial-gradient(circle, ${accent}20 0%, transparent 70%)`;
+    }
+    syncOrbs();
+    new MutationObserver(syncOrbs).observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+  })();
+  </script>
 
 </body>
 </html>
